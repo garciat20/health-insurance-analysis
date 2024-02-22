@@ -1,10 +1,14 @@
-from api_config import POVERTY_URL, poverty_params
+"""
+Purpose of this file is to parse specific data about poverty levels per state from the US Census Bureau API. -2020
+"""
+
+from api_config import POVERTY_URL, POVERTY_PARAMS
 import requests
 
 class PovertyStateData:
     __slots__ = ["data"]
     def __init__(self):
-        response = requests.get(POVERTY_URL, params=poverty_params)
+        response = requests.get(POVERTY_URL, params=POVERTY_PARAMS)
         self.data = response.json()
 
     def parsed_data_per_state(self):

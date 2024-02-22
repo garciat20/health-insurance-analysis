@@ -1,9 +1,9 @@
 """
-Purpose of this file is to parse specific data per state from the US Census Bureau API.
+Purpose of this file is to parse specific data about health insurance coverage per state from the US Census Bureau API. -2020
 """
 
 import requests
-from api_config import HEALTH_INSURANCE_URL, health_insurance_params
+from api_config import HEALTH_INSURANCE_URL, HEALTH_INSURANCE_PARAMAS
 
 UNINSURED_AMT_OF_PPL = "uninsured_amt"
 INSURED_AMT_OF_PPL = "insured_amt"
@@ -13,8 +13,8 @@ class InsuranceStateData:
     __slots__ = ["data"]
 
     def __init__(self):
-        response = requests.get(HEALTH_INSURANCE_URL, params=health_insurance_params)
-        self.data = response.json()
+        response = requests.get(HEALTH_INSURANCE_URL, params=HEALTH_INSURANCE_PARAMAS)
+        self.data = response.json() # data returned from the API
         
     def parsed_data_per_state(self):
         """
@@ -72,6 +72,7 @@ class InsuranceStateData:
                         pop_val_dict[key] = val + insured_pop + uninsured_pop
 
         return states_data
+
     
     def is_valid_data(self, insured_pop, uninsured_pop):
         """
@@ -80,11 +81,30 @@ class InsuranceStateData:
         if (insured_pop == None or uninsured_pop == None):
             return False
         return True
-
+    
+    def get_population_of_us(self):
+        """
+        Returns the population of the United States used in this data (in 2020)
+        """
+        total_population = 0
+        states_data = self.parsed_data_per_state()
+        for state_code, nested_dict in states_data.items():
+            # pop the nested dictionary
+            population_dict = nested_dict
+            for key, value in population_dict.items():
+                if key == POP_FROM_STATE:
+                    total_population += value # if the key is population, get the value and update total pop
+    
+        return total_population
+    
+    def get_states_data(self):
+        "TODO: Maybe delete this method?"
+        return self.parsed_data_per_state()
+    
 # used to test if data was parsed
 def main():
-    state_data = InsuranceStateData()
-    parsed_data = state_data.parsed_data_per_state()
-    print(parsed_data)
+    insurance_data = InsuranceStateData()
+    print(insurance_data.parsed_data_per_state())
+    print(insurance_data.get_population_of_us())
 
 main()
