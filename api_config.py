@@ -12,6 +12,6 @@ health_insurance_params = {
     "key": "7f004ff88d81d41b6d2534a7ba93e3bd504a4521",
 }
 
-povert_params = {
+poverty_params = {
 
 }

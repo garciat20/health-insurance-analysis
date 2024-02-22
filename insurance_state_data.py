@@ -3,7 +3,6 @@ Purpose of this file is to parse specific data per state from the US Census Bure
 """
 
 import requests
-import matplotlib.pyplot as plt
 from api_config import HEALTH_INSURANCE_URL, health_insurance_params
 
 UNINSURED_AMT_OF_PPL = "uninsured_amt"
@@ -82,7 +81,7 @@ class InsuranceStateData:
             return False
         return True
 
-
+# used to test if data was parsed
 def main():
     state_data = InsuranceStateData()
     parsed_data = state_data.parsed_data_per_state()
