@@ -1,33 +1,34 @@
+"""
+Purpose of this file is to parse specific data per state from the US Census Bureau API.
+"""
+
 import requests
 import matplotlib.pyplot as plt
-from api_config import URL, params
+from api_config import HEALTH_INSURANCE_URL, health_insurance_params
 
-"""
-Purpose of this file is to analyze the health insurance data from the US Census Bureau API.
-"""
 UNINSURED_AMT_OF_PPL = "uninsured_amt"
 INSURED_AMT_OF_PPL = "insured_amt"
 POP_FROM_STATE = "population"
 
-class ParseStateData:
+class InsuranceStateData:
     __slots__ = ["data"]
 
     def __init__(self):
-        response = requests.get(URL, params=params)
+        response = requests.get(HEALTH_INSURANCE_URL, params=health_insurance_params)
         self.data = response.json()
         
-    def parse_data_per_state(self):
+    def parsed_data_per_state(self):
         """
         Returns a dictionary containing every state code as the key and the values are the population used in the data collected along with uninsured/ insured people
         """
-        #The data returned from the API is all in strings, we have to convert to int
 
         states_data = {} # store's data corresponding to a state's code
 
-        # lets add up each state's population from the information given from the countiess
+        # dummy values given, will be updated when going through data
         state_code = -1
         county_code = -1
 
+        # data columns returned from the API: if more paramters are given, these columns will change
         state_col = 4
         county_col = 5
         insured_col = 0
@@ -41,6 +42,7 @@ class ParseStateData:
                 continue
 
             # if current statecode doesn't match previous one, that means we hit a new state because our data is organized in ascending order
+            # the data returned from the API is all in strings, we have to convert to int
             curr_state_code = int(row[state_col])
             curr_county_code = int(row[county_col])
             if (curr_state_code != state_code):
@@ -82,8 +84,8 @@ class ParseStateData:
 
 
 def main():
-    state_data = ParseStateData()
-    parsed_data = state_data.parse_data_per_state()
+    state_data = InsuranceStateData()
+    parsed_data = state_data.parsed_data_per_state()
     print(parsed_data)
 
 main()
