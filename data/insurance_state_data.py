@@ -3,7 +3,7 @@ Purpose of this file is to parse specific data about health insurance coverage p
 """
 
 import requests
-from api_config import HEALTH_INSURANCE_URL, HEALTH_INSURANCE_PARAMAS
+from config.api_config import HEALTH_INSURANCE_URL, HEALTH_INSURANCE_PARAMAS
 
 UNINSURED_AMT_OF_PPL = "uninsured_amt"
 INSURED_AMT_OF_PPL = "insured_amt"

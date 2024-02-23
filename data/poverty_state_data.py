@@ -2,7 +2,7 @@
 Purpose of this file is to parse specific data about poverty levels per state from the US Census Bureau API. -2020
 """
 
-from api_config import POVERTY_URL, POVERTY_PARAMS
+from config.api_config import POVERTY_URL, POVERTY_PARAMS
 import requests
 
 class PovertyStateData:
