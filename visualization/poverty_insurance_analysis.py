@@ -4,7 +4,6 @@ between poverty and people insured in the United States (more specifcally the st
 """
 import plotly.express as px
 import pandas as pd
-import numpy as np
 
 from data.insurance_state_data import InsuranceStateData
 from data.poverty_state_data import PovertyStateData
@@ -23,41 +22,18 @@ class PovertyInsuranceAnalysis:
 
     def analyze_insurance_state_data(self):
         """
-        Creates a visualization of the amount of people insured/ uninsured per state
-        TODO: FIGURE OUT HOW TO ACTUALLY PLOT SOMETHING NOW, MAYBE USE HELPER FROM STATES_FIPS_CODE.PY
-
-        Notes from tutorial:
-        - using examples from plotly data package it's evident we need data frames
-        - not only that but we need to understand how the dataframe is setup
-        - we can 
-
-        What I understand so far:
-        - I need to create a dataframe to use for the choropleth graph (with pandas)
-
+        Creates a visualization of the percentage of uninsured people in a state
+        TODO: make numbers look prettier somehow when you hover over the state
         """
-
-        # we want a choropleth graph to graph the amount of people insured per state vs the population of the state
-
-        # lets make a dataframe to use for the choropleth graph (insured and uninsured people per state)
-
-        #  below are simple examples of how to use pandas dataframes
-        #  and how to query the dataframe!
-        # ara1 = np.random.rand(5,2)
-        # df1 = pd.DataFrame(ara1, columns=['A', 'B'])
-        # queried = df1.query('A > 0.5 and B < 0.5')
-        # print(df1)
-        # print(queried)
-
+        # using helper function to get fips codes per state and converting to list
         states_data = self.insurance_state_data.parsed_data_per_state()
         states_fips_code = [f'{fips:02}' for fips in states_data.keys()] # list of string of fips codes
 
+        # lets get nested dict that contains amt_insured, amt_uninsured, pop_per_state
         pop_nested_dict = states_data.values()
 
         # everything is organized in order by FIPS code so it makes it easier, i can just enter the data raw
         state_name_list = get_state_names_by_fips_order()
-
-
-        # print(pop_nested_dict)
 
         proportional_uninsured_results = self.insurance_state_data.proportion_of_uninsured_to_state_pop()
 
@@ -66,10 +42,7 @@ class PovertyInsuranceAnalysis:
         df.insert(0, "fips", states_fips_code)
         df.insert(1, "state_name", STATE_ABBREVIATION)
         df.insert(2, "uninsured_vs_state_pop", proportional_uninsured_results)
-        #
-        # uninsured amount of people proportional to the state's population
-
-        # color highlights what we want to illustrate
+        # columns are fips, state_name, uninsured..., insured_amt, uninsured_amt, population --> maybe missing one? somehow check later
 
         # i did hover_data as such since I don't know how else to remove locations from being shown when hovering over a state
         # idk, i just used the dataframe for locations, i used the constant above but there were issues and I couldn't hide it
@@ -98,7 +71,7 @@ class PovertyInsuranceAnalysis:
         Creates a visualizaiton of the amount of people insured/ uninsured per state
         """
 
-    def anaylze_poverty_and_state_data():
+    def anaylze_poverty_and_uninsured_data():
         """
         Creates a visualzation based on poverty levels and people who have (or don't) insurance
         to draw a (possible) correlation between the two
