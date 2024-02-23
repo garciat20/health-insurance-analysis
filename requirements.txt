@@ -1,1 +1,4 @@
 # fill this in later with pip installations 
+pandas==1.3.5
+plotly==5.16.1
+requests==2.21.0
