@@ -117,8 +117,6 @@ class InsuranceStateData:
       
         return result
         
-    
-# used to test if data was parsed
 def main():
     insurance_data = InsuranceStateData()
     # print(insurance_data.parsed_data_per_state())
