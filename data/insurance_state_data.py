@@ -97,15 +97,33 @@ class InsuranceStateData:
     
         return total_population
     
-    def get_states_data(self):
-        "TODO: Maybe delete this method?"
-        return self.parsed_data_per_state()
+    def proportion_of_uninsured_to_state_pop(self):
+        """
+        Calculates the amount of uninsured people against the state population
+        returns a dict with key of fip code and value that's a percentage (out of 100, 100 == all uninsured and vice versa)
+        """
+        state_data = self.parsed_data_per_state()
+        nested_dict = state_data.values()
+
+        'STORE PRECENTAGE IN NEW DICT BY CODE OR STATENAME THO? -- most likely list bc its all ordered lol'
+        result = []
+        # state_data contained the states in ascending order via their state fips code
+        for state_proportion in nested_dict:
+            uninsured_people = state_proportion[UNINSURED_AMT_OF_PPL] 
+            pop_in_state = state_proportion[POP_FROM_STATE]
+            "formula will be (uninsured/pop) * 100"
+            percentage = (uninsured_people/pop_in_state) * 100
+            result.append(percentage)
+      
+        return result
+        
     
 # used to test if data was parsed
 def main():
     insurance_data = InsuranceStateData()
-    print(insurance_data.parsed_data_per_state())
-    print("Total population:", insurance_data.get_population_of_us())
+    # print(insurance_data.parsed_data_per_state())
+    # print("Total population:", insurance_data.get_population_of_us())
+    print(insurance_data.proportion_of_uninsured_to_state_pop())
     
 if __name__ == "__main__":
     main()

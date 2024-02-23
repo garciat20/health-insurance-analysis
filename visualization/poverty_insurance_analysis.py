@@ -8,9 +8,12 @@ import numpy as np
 
 from data.insurance_state_data import InsuranceStateData
 from data.poverty_state_data import PovertyStateData
-from data.states_fips_code_and_name import parse_fips_file
+from data.states_fips_code_and_name import parse_fips_file, get_state_names_by_fips_order
 
 STATE_ABBREVIATION = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+
+INSURED_VS_POP_COLUMN = "uninsured_vs_state_pop"
+
 
 class PovertyInsuranceAnalysis:
     __slots__ = ["insurance_state_data", "poverty_state_data"]
@@ -50,46 +53,44 @@ class PovertyInsuranceAnalysis:
 
         pop_nested_dict = states_data.values()
 
+        # everything is organized in order by FIPS code so it makes it easier, i can just enter the data raw
+        state_name_list = get_state_names_by_fips_order()
+
+
         # print(pop_nested_dict)
+
+        proportional_uninsured_results = self.insurance_state_data.proportion_of_uninsured_to_state_pop()
 
         df = pd.DataFrame(pop_nested_dict)
         # add column to datafram
         df.insert(0, "fips", states_fips_code)
-        # df["fips"] = states_fips_code
-        # dropped_df = df.drop(['uninsured_amt', 'population'], axis=1)
-        print(df)
-        """
-        I want to show the states with the highest uninsured people, to do so I need to make the numbers
-        of uninsured people proportional to the "population" (# of ppl that were surveryed to get this data)
-        """
+        df.insert(1, "state_name", STATE_ABBREVIATION)
+        df.insert(2, "uninsured_vs_state_pop", proportional_uninsured_results)
+        #
+        # uninsured amount of people proportional to the state's population
 
+        # color highlights what we want to illustrate
+
+        # i did hover_data as such since I don't know how else to remove locations from being shown when hovering over a state
+        # idk, i just used the dataframe for locations, i used the constant above but there were issues and I couldn't hide it
+        # using the dataframe helped avoid this issue, why it happned? idk, it said UNHASHABLE Type and i tried to set the constant
+        # to false in the hover_data dict
 
         fig = px.choropleth(
-            data_frame=df, locations=STATE_ABBREVIATION,locationmode="USA-states", scope="usa", color="population",hover_name=STATE_ABBREVIATION, hover_data=["uninsured_amt", "insured_amt"],
+            # locations, using dataframe column 'state_name' it somehow understands that idk, color highlights the important part
+            data_frame=df, locations="state_name",locationmode="USA-states", scope="usa",color=INSURED_VS_POP_COLUMN,
+            title="Percentage of Uninsured Population by State - 2020",
+            # when i hover i want to emphasize something/ make it bold (hover_name)
+            # i want to display certain data when i hover over something (hover_data)
+            hover_name=state_name_list, hover_data={'state_name': False,"uninsured_amt": True, "insured_amt": True, "population": True, INSURED_VS_POP_COLUMN: True},
+            # rename columns to something more meaningful
             labels={"insured_amt": "Amount Of People Insured", "uninsured_amt": "Amount Of People Uninsured",
-                    "population": "Number Of People Used For The Data"})
-#   color_continuous_scale="Viridis", scope="usa"
-            # labels={"insured_amt": "Amount Of People Insured", "uninsured_amt": "Amount Of People Uninsured",
-            #         "population": "Number Of People Used For The Data"}
-            # )
+                    "population": "Number Of People Used For The Data",
+                    INSURED_VS_POP_COLUMN: "Percentage Of State Uninsured",
+                    })
+
         fig.show()
 
-        # color_num = [number for number in range(len(STATE_ABBREVIATION))]
-
-        # data_frame_election = px.data.election()
-
-        # print(px.data.election())
-        
-        # fig = px.bar(data_frame=data_frame_election,x="district",y="Coderre",labels={'x': 'District', 'y': 'total votes'})
-        
-        "to override, just use a dict in labels and set the x or y to the value you actually want to display as the label"
-        # fig = px.bar(data_frame=data_frame_election, x="district", y="Coderre", labels={"Coderre": 'Votes For Coddere'})
-
-        # Allows us to grab data from a supplied URL
-
-        # fig = px.choropleth(data_frame=df,locations=STATE_ABBREVIATION, locationmode="USA-states", color=color_num, scope="usa")
-        # fig.show()
-        # return df
 
 
     def analyze_poverty_state_data():

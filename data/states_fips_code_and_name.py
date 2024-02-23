@@ -47,9 +47,17 @@ def parse_fips_file():
                     state_code_andnames[columns[0]] = columns[1]
 
     return state_code_andnames
-        
+
+def get_state_names_by_fips_order():
+    data = parse_fips_file()
+    state_names = []
+    for name in data.values():
+        state_names.append(name)
+    return state_names
+
 def main():
-    print(parse_fips_file())
-    
+
+    print(get_state_names_by_fips_order())
+
 if __name__ == "__main__":
     main()
