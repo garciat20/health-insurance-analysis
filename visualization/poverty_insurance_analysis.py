@@ -54,8 +54,25 @@ class PovertyInsuranceAnalysis:
 
         df = pd.DataFrame(pop_nested_dict)
         # add column to datafram
-        df["fips"] = states_fips_code
+        df.insert(0, "fips", states_fips_code)
+        # df["fips"] = states_fips_code
+        # dropped_df = df.drop(['uninsured_amt', 'population'], axis=1)
         print(df)
+        """
+        I want to show the states with the highest uninsured people, to do so I need to make the numbers
+        of uninsured people proportional to the "population" (# of ppl that were surveryed to get this data)
+        """
+
+
+        fig = px.choropleth(
+            data_frame=df, locations=STATE_ABBREVIATION,locationmode="USA-states", scope="usa", color="population",hover_name=STATE_ABBREVIATION, hover_data=["uninsured_amt", "insured_amt"],
+            labels={"insured_amt": "Amount Of People Insured", "uninsured_amt": "Amount Of People Uninsured",
+                    "population": "Number Of People Used For The Data"})
+#   color_continuous_scale="Viridis", scope="usa"
+            # labels={"insured_amt": "Amount Of People Insured", "uninsured_amt": "Amount Of People Uninsured",
+            #         "population": "Number Of People Used For The Data"}
+            # )
+        fig.show()
 
         # color_num = [number for number in range(len(STATE_ABBREVIATION))]
 
