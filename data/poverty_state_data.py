@@ -18,3 +18,10 @@ class PovertyStateData:
         #The data returned from the API is all in strings, we have to convert to int
 
         states_data = {}
+
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()

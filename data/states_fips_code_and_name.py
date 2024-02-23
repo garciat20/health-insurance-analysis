@@ -1,5 +1,5 @@
 """
-Helper to get the FIPS code for states
+Helper to get the FIPS code/state names for US states
 """
 
 import re
@@ -25,13 +25,14 @@ def parse_fips_file():
             if columns[0] == "-----------":
                 keep_processing = True
                 continue
-                
-            if columns[0] == stop_processing:
+            
+            # lets stop here
+            elif columns[0] == stop_processing:
                 break
 
+            # lets process the data
             if keep_processing:
                 if len(columns) > 2:
-                    print(columns)
                     for i in range(1, len(columns)):
                         # combine the state names that have spaces
                         complete_state_name += columns[i] + " "
@@ -46,6 +47,9 @@ def parse_fips_file():
                     state_code_andnames[columns[0]] = columns[1]
 
     return state_code_andnames
-            
-
-print(parse_fips_file())
+        
+def main():
+    print(parse_fips_file())
+    
+if __name__ == "__main__":
+    main()
