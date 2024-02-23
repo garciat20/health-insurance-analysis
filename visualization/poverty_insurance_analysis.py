@@ -16,6 +16,7 @@ class PovertyInsuranceAnalysis:
     def analyze_insurance_state_data(self):
         """
         Creates a visualization of the amount of people insured/ uninsured per state
+        TODO: FIGURE OUT HOW TO ACTUALLY PLOT SOMETHING NOW, MAYBE USE HELPER FROM STATES_FIPS_CODE.PY
         """
         # we want a choropleth graph to graph the amount of people insured per state vs the population of the state
 

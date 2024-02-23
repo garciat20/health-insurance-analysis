@@ -105,6 +105,6 @@ class InsuranceStateData:
 def main():
     insurance_data = InsuranceStateData()
     print(insurance_data.parsed_data_per_state())
-    print(insurance_data.get_population_of_us())
+    print("Total population:", insurance_data.get_population_of_us())
 
 main()
