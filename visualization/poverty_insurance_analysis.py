@@ -13,6 +13,12 @@ STATE_ABBREVIATION = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL"
 
 INSURED_VS_POP_COLUMN = "uninsured_vs_state_pop"
 
+PROMPT = """
+Which analysis would you like to see?
+1. Percentage of Uninsured Population by State - 2020
+2. Percentage of People in Poverty by State - 2020 (NOT DONE)
+3. Trend between Poverty and Uninsured People by State - 2020 (NOT DONE)
+Enter a number corresponding to the analysis you'd like to see: """
 
 class PovertyInsuranceAnalysis:
     __slots__ = ["insurance_state_data", "poverty_state_data"]
@@ -70,21 +76,34 @@ class PovertyInsuranceAnalysis:
         """
         Creates a visualizaiton of the amount of people insured/ uninsured per state
         """
+        print('no')
 
     def anaylze_poverty_and_uninsured_data():
         """
         Creates a visualzation based on poverty levels and people who have (or don't) insurance
         to draw a (possible) correlation between the two
         """
+        print('no')
 
-    def results():
-        """
-        TODO: May or may not actually implement this method ~ 
-        """
 
 def main():
+    """
+    Prompts user as to which visualization they would like to see.
+    """
+    user_selection = int(input(PROMPT))
     analysis = PovertyInsuranceAnalysis()
-    analysis.analyze_insurance_state_data()
+
+    # percentage of uninsured people per state
+    if user_selection == 1:
+        analysis.analyze_insurance_state_data()
+    
+    # percentage of people in poverty per state
+    elif user_selection == 2:
+        analysis.analyze_poverty_state_data()
+
+    # combine results to draw a correlation
+    elif user_selection == 3:
+        analysis.analyze_insurance_state_data()
 
 if __name__ == "__main__":
     main()
