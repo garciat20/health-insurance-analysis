@@ -7,11 +7,14 @@ import pandas as pd
 
 from data.insurance_state_data import InsuranceStateData
 from data.poverty_state_data import PovertyStateData
-from data.states_fips_code_and_name import parse_fips_file, get_state_names_by_fips_order
+from data.states_fips_code_and_name import get_fips_in_seq_order, get_state_names_by_fips_order
 
 STATE_ABBREVIATION = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 
 INSURED_VS_POP_COLUMN = "uninsured_vs_state_pop"
+
+PERCENT_OF_PPL_IN_POV_COLUMN = "SAEPOVRTALL_PT"
+STATE_ABREV_COLUMN = "STABREV"
 
 PROMPT = """
 Which analysis would you like to see?
@@ -21,14 +24,15 @@ Which analysis would you like to see?
 Enter a number corresponding to the analysis you'd like to see: """
 
 class PovertyInsuranceAnalysis:
-    __slots__ = ["insurance_state_data", "poverty_state_data"]
+    __slots__ = ["insurance_state_data", "poverty_state_data", "state_names"]
     def __init__(self):
         self.insurance_state_data = InsuranceStateData() # dictionary of data returned
         self.poverty_state_data = PovertyStateData() # dictionary of data returned
+        self.state_names = get_state_names_by_fips_order()
 
     def analyze_insurance_state_data(self):
         """
-        Creates a visualization of the percentage of uninsured people in a state
+        Creates a visualization of the percentage of uninsured people per state
         TODO: make numbers look prettier somehow when you hover over the state
         """
         # using helper function to get fips codes per state and converting to list
@@ -39,7 +43,6 @@ class PovertyInsuranceAnalysis:
         pop_nested_dict = states_data.values()
 
         # everything is organized in order by FIPS code so it makes it easier, i can just enter the data raw
-        state_name_list = get_state_names_by_fips_order()
 
         proportional_uninsured_results = self.insurance_state_data.proportion_of_uninsured_to_state_pop()
 
@@ -54,29 +57,62 @@ class PovertyInsuranceAnalysis:
         # idk, i just used the dataframe for locations, i used the constant above but there were issues and I couldn't hide it
         # using the dataframe helped avoid this issue, why it happned? idk, it said UNHASHABLE Type and i tried to set the constant
         # to false in the hover_data dict
-
+        print(df)
         fig = px.choropleth(
             # locations, using dataframe column 'state_name' it somehow understands that idk, color highlights the important part
             data_frame=df, locations="state_name",locationmode="USA-states", scope="usa",color=INSURED_VS_POP_COLUMN,
             title="Percentage of Uninsured Population by State - 2020",
             # when i hover i want to emphasize something/ make it bold (hover_name)
             # i want to display certain data when i hover over something (hover_data)
-            hover_name=state_name_list, hover_data={'state_name': False,"uninsured_amt": True, "insured_amt": True, "population": True, INSURED_VS_POP_COLUMN: True},
+            hover_name=self.state_names, hover_data={'state_name': False,"uninsured_amt": True, "insured_amt": True, "population": True, INSURED_VS_POP_COLUMN: True},
             # rename columns to something more meaningful
             labels={"insured_amt": "Amount Of People Insured", "uninsured_amt": "Amount Of People Uninsured",
                     "population": "Number Of People Used For The Data",
                     INSURED_VS_POP_COLUMN: "Percentage Of State Uninsured",
                     })
-
+        print(fig)
         fig.show()
 
-
-
-    def analyze_poverty_state_data():
+    def analyze_poverty_state_data(self):
         """
-        Creates a visualizaiton of the amount of people insured/ uninsured per state
+        Creates a visualization of the percentage of people in poverty per state
+        TODO: make numbers look prettier somehow when you hover over the state
         """
-        print('no')
+        df = self.poverty_state_data.parsed_data_per_state()
+        # print(df[PERCENT_OF_PPL_IN_POV_COLUMN])
+        # print([item for item in df.get(PERCENT_OF_PPL_IN_POV_COLUMN)])
+        # fips = get_fips_in_seq_order()
+        # df.insert(0, "fips", fips)
+        print(df)
+
+        
+        # clean up dataframe
+        # inplace is self-explanatory, rename() returns a df, so we can just say "manipulate the og one and leave as is"
+       
+        fig = px.choropleth(
+            data_frame=df,locations=STATE_ABREV_COLUMN,locationmode="USA-states", scope="usa",
+            color=PERCENT_OF_PPL_IN_POV_COLUMN,
+            color_continuous_scale="RdBu",
+            hover_name=self.state_names,
+            hover_data={STATE_ABREV_COLUMN: False},
+            labels={PERCENT_OF_PPL_IN_POV_COLUMN: "Percent Of People In Poverty"},
+            title="Percentage of Poverty Population by State - 2020"
+        )
+        print(fig)
+        fig.update_layout(
+            coloraxis_colorbar=dict(
+                title="Percent of People in Poverty",  # Adjust title as needed
+                xanchor="right",
+                yanchor="top"
+            ),
+            legend=dict(
+                title="<b>Hover Data</b>",  # Adjust title as needed
+                x=0.01,
+                y=1
+            )
+        )
+
+        fig.show()
 
     def anaylze_poverty_and_uninsured_data():
         """

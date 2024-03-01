@@ -4,6 +4,10 @@ Purpose of this file is to parse specific data about poverty levels per state fr
 
 from config.api_config import POVERTY_URL, POVERTY_PARAMS
 import requests
+import pandas as pd
+
+PERCENT_OF_PPL_IN_POV = "SAEPOVRTALL_PT"
+STATE_ABREV = "STABREV"
 
 class PovertyStateData:
     __slots__ = ["data"]
@@ -13,15 +17,32 @@ class PovertyStateData:
 
     def parsed_data_per_state(self):
         """
-        Returns a dictionary containing every state code as the key and the values are the population used in the data collected along with the poverty rate
+        Returns a dataframe of the data going to be plotted, this API ate 🐥
         """
-        #The data returned from the API is all in strings, we have to convert to int
+        # API provided me a lot of good things yessss
 
-        states_data = {}
+        df = pd.DataFrame(self.data)
+        
+        # clean up dataframe
+        # inplace is self-explanatory, rename() returns a df, so we can just say "manipulate the og one and leave as is"
+        df = df.rename(columns={0: "SAEPOVRTALL_PT", 1: "STABREV", 2: "YEAR", 3: "state"})
+
+        # we want everything except the header, and adjust indices that were possibly modified
+        df = df.iloc[1:].reset_index(drop=True)
+
+        "TODO: MAYBE ADD BACK YEAR COLUMN INCASE IF DO A TIME SERIES ANALYSIS"
+        # we want to remove the last 2 columns, as they are not needed 
+        df = df.iloc[:, :-2]
+
+        # df.drop(index=0, inplace=True)
+        # df.reset_index(drop=True,inplace=True)
+        return df
+
 
 
 def main():
-    pass
+    psd = PovertyStateData()
+    print(psd.parsed_data_per_state())
 
 if __name__ == "__main__":
     main()

@@ -55,9 +55,18 @@ def get_state_names_by_fips_order():
         state_names.append(name)
     return state_names
 
+def get_fips_in_seq_order():
+    data = parse_fips_file()
+    fips_in_order = []
+    for fips in data.keys():
+        fips_in_order.append(fips)
+
+    return fips_in_order
+
 def main():
 
-    print(get_state_names_by_fips_order())
+    # print(get_state_names_by_fips_order())
+    print(get_fips_in_seq_order())
 
 if __name__ == "__main__":
     main()
