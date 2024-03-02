@@ -15,7 +15,7 @@ class PovertyStateData:
         response = requests.get(POVERTY_URL, params=POVERTY_PARAMS)
         self.data = response.json()
 
-    def parsed_data_per_state(self):
+    def get_poverty_dataframe(self):
         """
         Returns a dataframe of the data going to be plotted, this API ate 🐥
         """

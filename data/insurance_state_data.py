@@ -3,7 +3,10 @@ Purpose of this file is to parse specific data about health insurance coverage p
 """
 
 import requests
+import pandas as pd
 from config.api_config import HEALTH_INSURANCE_URL, HEALTH_INSURANCE_PARAMAS
+
+STATE_ABBREVIATION = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 
 UNINSURED_AMT_OF_PPL = "uninsured_amt"
 INSURED_AMT_OF_PPL = "insured_amt"
@@ -116,6 +119,30 @@ class InsuranceStateData:
             result.append(percentage)
       
         return result
+    
+    def get_insurance_dataframe(self):
+        """
+        Format the data we gathered into a dataframe to utilize in our plotly visualizations
+        """
+         # using helper function to get fips codes per state and converting to list
+        states_data = self.parsed_data_per_state()
+        states_fips_code = [f'{fips:02}' for fips in states_data.keys()] # list of string of fips codes
+
+        # lets get nested dict that contains amt_insured, amt_uninsured, pop_per_state
+        pop_nested_dict = states_data.values()
+
+        # everything is organized in order by FIPS code so it makes it easier, i can just enter the data raw
+
+        proportional_uninsured_results = self.proportion_of_uninsured_to_state_pop()
+
+        df = pd.DataFrame(pop_nested_dict)
+        # add column to datafram
+        df.insert(0, "fips", states_fips_code)
+        df.insert(1, "state_name", STATE_ABBREVIATION)
+        df.insert(2, "uninsured_vs_state_pop", proportional_uninsured_results)
+        # columns are fips, state_name, uninsured..., insured_amt, uninsured_amt, population --> maybe missing one? somehow check later
+
+        return df
         
 def main():
     insurance_data = InsuranceStateData()
