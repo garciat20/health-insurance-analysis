@@ -13,8 +13,8 @@ pip3 install -r requirements.txt
 ```
 
 ## Usage
-Once the requirments are installed you may run the primary file through the command line to showcase the visualizations as such.
-NOTE: Currently I only graphed the percentage of people per state uninsured.
+Once the requirments are installed you may run the primary file through the command line to showcase the visualizations via prompts given from the program. 
+NOTE: Currently I only graphed 2 things: the percentage of people per state uninsured, and the percentage of people per state in poverty.
 
 ```
 python3 -m visualization.poverty_insurance_analysis
