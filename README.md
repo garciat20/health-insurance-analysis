@@ -20,3 +20,7 @@ NOTE: The graphs made are not polished yet so they look a bit rough, and the dat
 python3 -m visualization.poverty_insurance_analysis
 ```
 
+## TODO
+- [ ] Time Series Analysis 
+- [ ] Utilize ML/AI Library To Predict Future Outcome
+- [ ] Polish Visuals

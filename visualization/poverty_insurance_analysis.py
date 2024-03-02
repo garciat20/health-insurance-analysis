@@ -33,6 +33,7 @@ class PovertyInsuranceAnalysis:
         """
         Creates a visualization of the percentage of uninsured people per state
         TODO: make numbers look prettier somehow when you hover over the state
+        TODO: Polish visuals
         """
         
         # i did hover_data as such since I don't know how else to remove locations from being shown when hovering over a state
@@ -60,8 +61,7 @@ class PovertyInsuranceAnalysis:
         """
         Creates a visualization of the percentage of people in poverty per state
         TODO: make numbers look prettier somehow when you hover over the state
-        TODO: Somehow the colorbar isn't in the graph, I don't know why, I'll have to look into it: SOLVED
-        FORGOT TO CHANGE TYPE IN PANDAS COLUMN
+        TODO: Polish visuals
         """
         # df = self.poverty_state_data.parsed_data_per_state()
        
@@ -79,8 +79,7 @@ class PovertyInsuranceAnalysis:
 
     def anaylze_poverty_and_uninsured_data(self):
         """
-        TODO: Perform correlation analysis between the two variables (insurance coverage per state vs poverty per state) for 2020 and put it somewhere on the graph to add more information to the graph.
-        TODO: Visualize with linear fit trendline (line of best fit)
+        TODO: Polish visuals
         TODO: To a time series analysis to see if this correlation has been existent for a while
         """
 
