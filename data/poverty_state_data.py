@@ -22,20 +22,23 @@ class PovertyStateData:
         # API provided me a lot of good things yessss
 
         df = pd.DataFrame(self.data)
-        
-        # clean up dataframe
-        # inplace is self-explanatory, rename() returns a df, so we can just say "manipulate the og one and leave as is"
+
+        # rename() returns a df, so we can just say "manipulate the og one and leave as is"
         df = df.rename(columns={0: "SAEPOVRTALL_PT", 1: "STABREV", 2: "YEAR", 3: "state"})
 
         # we want everything except the header, and adjust indices that were possibly modified
         df = df.iloc[1:].reset_index(drop=True)
 
-        "TODO: MAYBE ADD BACK YEAR COLUMN INCASE IF DO A TIME SERIES ANALYSIS"
-        # we want to remove the last 2 columns, as they are not needed 
-        df = df.iloc[:, :-2]
+        # change 1st column to numeric type (float)
+        df["SAEPOVRTALL_PT"] = df["SAEPOVRTALL_PT"].apply(pd.to_numeric)
 
-        # df.drop(index=0, inplace=True)
-        # df.reset_index(drop=True,inplace=True)
+        print(df.dtypes)
+        
+
+        # "TODO: MAYBE ADD BACK YEAR COLUMN INCASE IF DO A TIME SERIES ANALYSIS"
+        # we want to remove the last column, as its not needed 
+        df = df.iloc[:, :-1]
+
         return df
 
 

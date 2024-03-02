@@ -19,7 +19,7 @@ STATE_ABREV_COLUMN = "STABREV"
 PROMPT = """
 Which analysis would you like to see?
 1. Percentage of Uninsured Population by State - 2020
-2. Percentage of People in Poverty by State - 2020 (NOT DONE)
+2. Percentage of People in Poverty by State - 2020 
 3. Trend between Poverty and Uninsured People by State - 2020 (NOT DONE)
 Enter a number corresponding to the analysis you'd like to see: """
 
@@ -57,11 +57,12 @@ class PovertyInsuranceAnalysis:
         # idk, i just used the dataframe for locations, i used the constant above but there were issues and I couldn't hide it
         # using the dataframe helped avoid this issue, why it happned? idk, it said UNHASHABLE Type and i tried to set the constant
         # to false in the hover_data dict
-        print(df)
         fig = px.choropleth(
             # locations, using dataframe column 'state_name' it somehow understands that idk, color highlights the important part
             data_frame=df, locations="state_name",locationmode="USA-states", scope="usa",color=INSURED_VS_POP_COLUMN,
             title="Percentage of Uninsured Population by State - 2020",
+            # lets specify the range of the colorbar where to start/ end
+            range_color=(0, df[INSURED_VS_POP_COLUMN].max()),
             # when i hover i want to emphasize something/ make it bold (hover_name)
             # i want to display certain data when i hover over something (hover_data)
             hover_name=self.state_names, hover_data={'state_name': False,"uninsured_amt": True, "insured_amt": True, "population": True, INSURED_VS_POP_COLUMN: True},
@@ -70,46 +71,27 @@ class PovertyInsuranceAnalysis:
                     "population": "Number Of People Used For The Data",
                     INSURED_VS_POP_COLUMN: "Percentage Of State Uninsured",
                     })
-        print(fig)
+
         fig.show()
 
     def analyze_poverty_state_data(self):
         """
         Creates a visualization of the percentage of people in poverty per state
         TODO: make numbers look prettier somehow when you hover over the state
+        TODO: Somehow the colorbar isn't in the graph, I don't know why, I'll have to look into it: SOLVED
+        FORGOT TO CHANGE TYPE IN PANDAS COLUMN
         """
         df = self.poverty_state_data.parsed_data_per_state()
-        # print(df[PERCENT_OF_PPL_IN_POV_COLUMN])
-        # print([item for item in df.get(PERCENT_OF_PPL_IN_POV_COLUMN)])
-        # fips = get_fips_in_seq_order()
-        # df.insert(0, "fips", fips)
-        print(df)
-
-        
-        # clean up dataframe
-        # inplace is self-explanatory, rename() returns a df, so we can just say "manipulate the og one and leave as is"
        
         fig = px.choropleth(
-            data_frame=df,locations=STATE_ABREV_COLUMN,locationmode="USA-states", scope="usa",
+            data_frame=df,locations=STATE_ABREV_COLUMN,locationmode="USA-states",scope="usa",
             color=PERCENT_OF_PPL_IN_POV_COLUMN,
-            color_continuous_scale="RdBu",
+            color_continuous_scale="Viridis",
+            range_color=(0, df[PERCENT_OF_PPL_IN_POV_COLUMN].max()),
             hover_name=self.state_names,
             hover_data={STATE_ABREV_COLUMN: False},
             labels={PERCENT_OF_PPL_IN_POV_COLUMN: "Percent Of People In Poverty"},
             title="Percentage of Poverty Population by State - 2020"
-        )
-        print(fig)
-        fig.update_layout(
-            coloraxis_colorbar=dict(
-                title="Percent of People in Poverty",  # Adjust title as needed
-                xanchor="right",
-                yanchor="top"
-            ),
-            legend=dict(
-                title="<b>Hover Data</b>",  # Adjust title as needed
-                x=0.01,
-                y=1
-            )
         )
 
         fig.show()
