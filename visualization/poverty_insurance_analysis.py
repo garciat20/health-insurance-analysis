@@ -4,6 +4,7 @@ between poverty and people insured in the United States (more specifcally the st
 """
 import plotly.express as px
 import pandas as pd
+import numpy as np
 
 from data.insurance_state_data import InsuranceStateData
 from data.poverty_state_data import PovertyStateData
@@ -22,7 +23,7 @@ Which analysis would you like to see?
 Enter a number corresponding to the analysis you'd like to see: """
 
 class PovertyInsuranceAnalysis:
-    __slots__ = ["insurance_state_data", "poverty_state_data", "state_names"]
+    __slots__ = ["insurance_df", "poverty_df", "state_names"]
     def __init__(self):
         self.insurance_df = InsuranceStateData().get_insurance_dataframe() 
         self.poverty_df = PovertyStateData().get_poverty_dataframe() 
@@ -62,10 +63,10 @@ class PovertyInsuranceAnalysis:
         TODO: Somehow the colorbar isn't in the graph, I don't know why, I'll have to look into it: SOLVED
         FORGOT TO CHANGE TYPE IN PANDAS COLUMN
         """
-        df = self.poverty_state_data.parsed_data_per_state()
+        # df = self.poverty_state_data.parsed_data_per_state()
        
         fig = px.choropleth(
-            data_frame=df,locations=STATE_ABREV_COLUMN,locationmode="USA-states",scope="usa",
+            data_frame=self.poverty_df,locations=STATE_ABREV_COLUMN,locationmode="USA-states",scope="usa",
             color=PERCENT_OF_PPL_IN_POV_COLUMN,
             color_continuous_scale="Viridis",
             hover_name=self.state_names,
@@ -76,13 +77,35 @@ class PovertyInsuranceAnalysis:
 
         fig.show()
 
-    def anaylze_poverty_and_uninsured_data():
+    def anaylze_poverty_and_uninsured_data(self):
         """
-        Creates a visualzation based on poverty levels and people who have (or don't) insurance
-        to draw a (possible) correlation between the two
+        TODO: Perform correlation analysis between the two variables (insurance coverage per state vs poverty per state) for 2020 and put it somewhere on the graph to add more information to the graph.
+        TODO: Visualize with linear fit trendline (line of best fit)
+        TODO: To a time series analysis to see if this correlation has been existent for a while
         """
-        print('no')
 
+        # lets get the percentages from each data frame and put it into one, combine column wise
+        correlation = np.corrcoef(self.insurance_df[INSURED_VS_POP_COLUMN], self.poverty_df[PERCENT_OF_PPL_IN_POV_COLUMN])
+
+        print(correlation)
+
+        # lets combine the dataframes | both are sorted by states so it should be fine
+        combined_cols = {INSURED_VS_POP_COLUMN: self.insurance_df[INSURED_VS_POP_COLUMN],
+                         PERCENT_OF_PPL_IN_POV_COLUMN: self.poverty_df[PERCENT_OF_PPL_IN_POV_COLUMN],
+                         STATE_ABREV_COLUMN: self.poverty_df[STATE_ABREV_COLUMN]}
+
+        insurance_and_poverty_df = pd.DataFrame(combined_cols)
+
+        print(insurance_and_poverty_df)
+
+        fig = px.scatter(data_frame=insurance_and_poverty_df, x=INSURED_VS_POP_COLUMN, 
+                         y=PERCENT_OF_PPL_IN_POV_COLUMN,
+                         trendline="ols",title="Correlation Between Poverty and Uninsured People by State - 2020",
+                         labels={INSURED_VS_POP_COLUMN: "Percentage Of State Uninsured",
+                                 PERCENT_OF_PPL_IN_POV_COLUMN: "Percentage Of State In Poverty"},
+                                 trendline_color_override="black")
+
+        fig.show()
 
 def main():
     """
@@ -94,14 +117,14 @@ def main():
     # percentage of uninsured people per state
     if user_selection == 1:
         analysis.analyze_insurance_state_data()
-    
+
     # percentage of people in poverty per state
     elif user_selection == 2:
         analysis.analyze_poverty_state_data()
 
     # combine results to draw a correlation
     elif user_selection == 3:
-        analysis.analyze_insurance_state_data()
+        analysis.anaylze_poverty_and_uninsured_data()
 
 if __name__ == "__main__":
     main()
