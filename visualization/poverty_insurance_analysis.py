@@ -19,7 +19,7 @@ PROMPT = """
 Which analysis would you like to see?
 1. Percentage of Uninsured Population by State - 2020
 2. Percentage of People in Poverty by State - 2020 
-3. Trend between Poverty and Uninsured People by State - 2020 (NOT DONE)
+3. Trend between Poverty and Uninsured People by State - 2020 
 Enter a number corresponding to the analysis you'd like to see: """
 
 class PovertyInsuranceAnalysis:
@@ -84,10 +84,13 @@ class PovertyInsuranceAnalysis:
         TODO: To a time series analysis to see if this correlation has been existent for a while
         """
 
-        # lets get the percentages from each data frame and put it into one, combine column wise
+        # plug correlation number in graph somehow
         correlation = np.corrcoef(self.insurance_df[INSURED_VS_POP_COLUMN], self.poverty_df[PERCENT_OF_PPL_IN_POV_COLUMN])
 
-        print(correlation)
+        # indexing the correlation matrix to get the correlation coefficient
+        correlation = correlation[0][1]
+
+        # print(correlation)
 
         # lets combine the dataframes | both are sorted by states so it should be fine
         combined_cols = {INSURED_VS_POP_COLUMN: self.insurance_df[INSURED_VS_POP_COLUMN],
@@ -96,7 +99,7 @@ class PovertyInsuranceAnalysis:
 
         insurance_and_poverty_df = pd.DataFrame(combined_cols)
 
-        print(insurance_and_poverty_df)
+        # print(insurance_and_poverty_df)
 
         fig = px.scatter(data_frame=insurance_and_poverty_df, x=INSURED_VS_POP_COLUMN, 
                          y=PERCENT_OF_PPL_IN_POV_COLUMN,
@@ -104,6 +107,13 @@ class PovertyInsuranceAnalysis:
                          labels={INSURED_VS_POP_COLUMN: "Percentage Of State Uninsured",
                                  PERCENT_OF_PPL_IN_POV_COLUMN: "Percentage Of State In Poverty"},
                                  trendline_color_override="black")
+        
+      
+        # Add correlation coefficient as text outside the graph
+        fig.add_annotation(x=1, y=1.05,  # Position outside the graph
+                        xref='paper', yref='paper',
+                        text=f'Correlation Coeeficient: {correlation:.2f}',
+                        showarrow=False)
 
         fig.show()
 
