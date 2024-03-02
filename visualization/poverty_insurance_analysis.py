@@ -60,9 +60,8 @@ class PovertyInsuranceAnalysis:
         fig = px.choropleth(
             # locations, using dataframe column 'state_name' it somehow understands that idk, color highlights the important part
             data_frame=df, locations="state_name",locationmode="USA-states", scope="usa",color=INSURED_VS_POP_COLUMN,
+            color_continuous_scale="RdBu",
             title="Percentage of Uninsured Population by State - 2020",
-            # lets specify the range of the colorbar where to start/ end
-            range_color=(0, df[INSURED_VS_POP_COLUMN].max()),
             # when i hover i want to emphasize something/ make it bold (hover_name)
             # i want to display certain data when i hover over something (hover_data)
             hover_name=self.state_names, hover_data={'state_name': False,"uninsured_amt": True, "insured_amt": True, "population": True, INSURED_VS_POP_COLUMN: True},
@@ -87,10 +86,9 @@ class PovertyInsuranceAnalysis:
             data_frame=df,locations=STATE_ABREV_COLUMN,locationmode="USA-states",scope="usa",
             color=PERCENT_OF_PPL_IN_POV_COLUMN,
             color_continuous_scale="Viridis",
-            range_color=(0, df[PERCENT_OF_PPL_IN_POV_COLUMN].max()),
             hover_name=self.state_names,
             hover_data={STATE_ABREV_COLUMN: False},
-            labels={PERCENT_OF_PPL_IN_POV_COLUMN: "Percent Of People In Poverty"},
+            labels={PERCENT_OF_PPL_IN_POV_COLUMN: "Percentage Of State In Poverty"},
             title="Percentage of Poverty Population by State - 2020"
         )
 

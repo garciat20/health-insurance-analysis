@@ -31,8 +31,6 @@ class PovertyStateData:
 
         # change 1st column to numeric type (float)
         df["SAEPOVRTALL_PT"] = df["SAEPOVRTALL_PT"].apply(pd.to_numeric)
-
-        print(df.dtypes)
         
 
         # "TODO: MAYBE ADD BACK YEAR COLUMN INCASE IF DO A TIME SERIES ANALYSIS"
