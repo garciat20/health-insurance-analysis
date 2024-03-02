@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 ```
 
 ## Usage
-Once the requirments are installed you may run the primary file through the command line to showcase the visualizations via prompts given from the program. 
+Once the requirments are installed you may run the primary file through the command line to showcase the visualizations via prompts given from the program.\
 **NOTE:** The graphs made are not polished yet so they look a bit rough, and the data is from 2020 and I plan on somehow creating a time series analysis to see if the insurance coverage/ poverty per state correlation has been existent for a while.
 
 ```
